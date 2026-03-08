@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     public bool canMove = true;
     public bool noClip = false;
 
+    public bool doubleJump;
+    private bool canDoubleJump = true;
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -43,10 +45,21 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
             Debug.Log("Jump");
             Jump();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && !isGrounded() && doubleJump && canDoubleJump)
+        {
+            Jump();
+            canDoubleJump = false;
+        }
+
+        if (isGrounded())
+        {
+            canDoubleJump = true;
         }
 
         //Flip Sprite
