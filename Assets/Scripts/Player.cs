@@ -14,6 +14,12 @@ public class Player : MonoBehaviour
 
     public bool doubleJump;
     private bool canDoubleJump = true;
+
+    public float jumpTime;
+    public float jumpTimeCounter;
+
+    private bool isJumping;
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -45,10 +51,31 @@ public class Player : MonoBehaviour
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
+
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
         {
-            Debug.Log("Jump");
+            isJumping = true;
+            jumpTimeCounter = jumpTime;
             Jump();
+        }
+
+        if (Input.GetKey(KeyCode.Space) && isJumping == true)
+        {
+            if (jumpTimeCounter > 0)
+            {
+                Jump();
+                jumpTimeCounter -= Time.deltaTime;
+            }
+
+            else
+            {
+                isJumping = false;
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            isJumping = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && !isGrounded() && doubleJump && canDoubleJump)
@@ -60,6 +87,12 @@ public class Player : MonoBehaviour
         if (isGrounded())
         {
             canDoubleJump = true;
+            body.gravityScale = 1.5f;
+        }
+
+        if (!isGrounded() && body.linearVelocity.y <= 0)
+        {
+            body.gravityScale = 2;
         }
 
         //Flip Sprite

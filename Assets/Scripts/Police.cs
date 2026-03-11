@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Reflection.Emit;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -23,6 +24,11 @@ public class Police : MonoBehaviour
     public float jumpForce;
 
     [SerializeField] private LayerMask raycastLayers;
+
+    public LineRenderer lineRenderer;
+
+    private Vector2 initialPosition;
+    private State initialState;
     
     public enum State
     {
@@ -38,6 +44,9 @@ public class Police : MonoBehaviour
         player = Player.FindAnyObjectByType<Player>();
         body = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
+        lineRenderer = GetComponent<LineRenderer>();
+        initialPosition = transform.position;
+        initialState = state;
     }
 
     // Update is called once per frame
@@ -58,6 +67,7 @@ public class Police : MonoBehaviour
         }
     }
 
+    //Method for patrolling
     private void Moving()
     {
         body.linearVelocity = new Vector2(wanderSpeed, body.linearVelocity.y);
@@ -78,8 +88,12 @@ public class Police : MonoBehaviour
             Debug.Log("Dude rotate");
             Rotate();
         }
+
+        //Enable the sight line
+        lineRenderer.enabled = true;
     }
 
+    //Method for turning the object around
     void Rotate()
     {
         transform.Rotate(0, 180, 0);
@@ -96,12 +110,17 @@ public class Police : MonoBehaviour
         }
     }
 
+    //Method for detecting the player and drawing the sight line
     void Detection()
     {
         RaycastHit2D detection = Physics2D.Raycast(ledgeDetector.position, forwards, sightDistance, raycastLayers);
+        lineRenderer.SetPosition(0, ledgeDetector.position);
+        
         if (detection.collider != null)
         {
-            Debug.DrawRay(ledgeDetector.position, forwards * detection.distance, Color.red);
+            //Debug.DrawRay(ledgeDetector.position, forwards * detection.distance, Color.red);
+            lineRenderer.SetPosition(1, detection.point);
+
             if (detection.collider.CompareTag("Player"))
             {
                 state = State.Purusing;
@@ -109,10 +128,12 @@ public class Police : MonoBehaviour
         }
         else
         {
-            Debug.DrawRay(ledgeDetector.position, forwards * sightDistance, Color.red);
+            //Debug.DrawRay(ledgeDetector.position, forwards * sightDistance, Color.red);
+            lineRenderer.SetPosition(1, new Vector3(ledgeDetector.position.x + forwards.x * sightDistance, ledgeDetector.position.y, 0));
         }
-
     }
+
+    //Method for chasing the player
     void Pursuing()
     {
         body.linearVelocity = new Vector2(pursueSpeed, body.linearVelocity.y);
@@ -129,19 +150,14 @@ public class Police : MonoBehaviour
         RaycastHit2D hit = Physics2D.Raycast(ledgeDetector.position, Vector2.down, raycastDistance, groundLayer);
         RaycastHit2D hitWall = Physics2D.Raycast(ledgeDetector.position, forwards, wallDistance, groundLayer);
 
-        //if (hit.collider == null || hitWall == true)
-        //{
-        //    Debug.Log("Dude rotate");
-        //    Rotate();
-        //}
-
+        //Will attempt to jump up walls to chase player
         if (hitWall == true && isGrounded())
         {
             Jump();
         }
 
+        //Brief pause before turning around while chasing
         float distance = transform.position.x - player.transform.position.x;
-        //Debug.Log(distance);
 
         if (distance < 0.0f && !facingRight && turning == false)
         {
@@ -155,19 +171,38 @@ public class Police : MonoBehaviour
             //Rotate();
             turning = true;
         }
+
+        if (distance > 11f || distance < -11f)
+        {
+            Debug.Log("Stop chasing");
+            Respawn();
+        }
+
+        //Turn off line
+        lineRenderer.enabled = false;
     }
 
+    //Method for jumping
     void Jump()
     {
         body.linearVelocity = new Vector2(body.linearVelocity.x, jumpForce);
     }
 
+    //Respawns the object
+    void Respawn()
+    {
+        transform.position = initialPosition;
+        state = initialState;
+    }
+
+    //Checks if the object is grounded
     private bool isGrounded()
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;
     }
 
+    //Timer used to create delay when turning
     IEnumerator waiterTurn()
     {
         yield return new WaitForSeconds(0.2f);
