@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
     public float jumpForce;
     public float speed;
     private Rigidbody2D body;
-    private BoxCollider2D boxCollider;
+    public BoxCollider2D boxCollider;
     [SerializeField] private LayerMask groundLayer;
 
     public bool canMove = true;
@@ -134,7 +134,13 @@ public class Player : MonoBehaviour
         body.linearVelocity = new Vector2(body.linearVelocity.x, jumpForce);
     }
 
-    private bool isGrounded()
+    public void StopMoving()
+    {
+        body.linearVelocity = Vector2.zero;
+        canMove = false;
+    }
+
+    public bool isGrounded()
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;
