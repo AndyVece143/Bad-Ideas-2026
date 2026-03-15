@@ -4,6 +4,7 @@ using UnityEngine;
 public class MovableObject : MonoBehaviour
 {
     public ClickableObject clickableObject;
+    public Passcode passcode;
     public float speed;
     public Vector2 targetPosition;
 
@@ -16,10 +17,22 @@ public class MovableObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (clickableObject.clicked == true)
+        if (clickableObject != null)
         {
-            MoveObject();
+            if (clickableObject.clicked == true)
+            {
+                MoveObject();
+            }
         }
+
+        if (passcode != null)
+        {
+            if (passcode.unlock == true)
+            {
+                MoveObject();
+            }
+        }
+
     }
 
     void MoveObject()

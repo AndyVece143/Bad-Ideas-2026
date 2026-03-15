@@ -85,7 +85,6 @@ public class Police : MonoBehaviour
 
         if (hit.collider == null || hitWall == true)
         {
-            Debug.Log("Dude rotate");
             Rotate();
         }
 
