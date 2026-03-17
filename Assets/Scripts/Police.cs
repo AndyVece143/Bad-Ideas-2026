@@ -29,12 +29,14 @@ public class Police : MonoBehaviour
 
     private Vector2 initialPosition;
     private State initialState;
+    public Transform grabSpot;
     
     public enum State
     {
         Moving,
         Standing,
         Purusing,
+        Grab,
     }
     public State state;
 
@@ -63,6 +65,9 @@ public class Police : MonoBehaviour
                 break;
             case State.Purusing:
                 Pursuing(); 
+                break;
+            case State.Grab:
+                Grabbing();
                 break;
         }
     }
@@ -181,6 +186,11 @@ public class Police : MonoBehaviour
         lineRenderer.enabled = false;
     }
 
+    void Grabbing()
+    {
+        body.linearVelocity = new Vector2(0, body.linearVelocity.y);
+    }
+
     //Method for jumping
     void Jump()
     {
@@ -188,7 +198,7 @@ public class Police : MonoBehaviour
     }
 
     //Respawns the object
-    void Respawn()
+    public void Respawn()
     {
         transform.position = initialPosition;
         state = initialState;

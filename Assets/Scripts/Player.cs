@@ -20,6 +20,16 @@ public class Player : MonoBehaviour
 
     private bool isJumping;
 
+    public GameManager manager;
+    public Police police;
+    public enum State
+    {
+        Standard,
+        Grab,
+    }
+    public State state;
+
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -28,27 +38,38 @@ public class Player : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        state = State.Standard;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (canMove)
+        //if (canMove)
+        //{
+        //    if (!noClip)
+        //    {
+        //        Movement();
+        //    }
+        //    if (noClip)
+        //    {
+        //        NoClipMovement();
+        //    }
+        //}
+
+        switch (state)
         {
-            if (!noClip)
-            {
+            case State.Standard:
                 Movement();
-            }
-            if (noClip)
-            {
-                NoClipMovement();
-            }
+                break;
+            case State.Grab:
+                Grabbed();
+                break;
         }
     }
 
     private void Movement()
     {
+        boxCollider.enabled = true;
         float horizontalInput = Input.GetAxis("Horizontal");
         body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
 
@@ -138,6 +159,28 @@ public class Player : MonoBehaviour
     {
         body.linearVelocity = Vector2.zero;
         canMove = false;
+    }
+
+    void Grabbed()
+    {
+        body.linearVelocity = new Vector2(0, 0);
+        if (police != null)
+        {
+            body.transform.position = police.grabSpot.position;
+        }
+    }
+
+    public void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Police")
+        {
+            state = State.Grab;
+            police = collision.gameObject.GetComponent<Police>();
+            police.state = Police.State.Grab;
+            boxCollider.enabled = false;
+            StartCoroutine(manager.waiter(police));
+            //manager.RespawnPlayer(collision.gameObject.GetComponent<Police>());
+        }
     }
 
     public bool isGrounded()
