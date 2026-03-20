@@ -229,7 +229,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 0
   m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &36098483
 MonoBehaviour:
@@ -3013,6 +3013,9 @@ MonoBehaviour:
   canMove: 1
   noClip: 0
   doubleJump: 0
+  airDash: 1
+  airDashSpeed: 8
+  airDashTime: 0.5
   jumpTime: 0.35
   jumpTimeCounter: 0
   manager: {fileID: 451241956}

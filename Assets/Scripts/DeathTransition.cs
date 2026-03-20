@@ -18,6 +18,7 @@ public class DeathTransition : MonoBehaviour
 
     public void DoTransition()
     {
+        Debug.Log("Deat");
         anim.Play("trans");
     }
 }
