@@ -78,59 +78,63 @@ public class Player : MonoBehaviour
         boxCollider.enabled = true;
         float horizontalInput = Input.GetAxis("Horizontal");
 
-        if (!isAirDashing)
+        if (canMove)
         {
-            body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
-
-            if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
+            if (!isAirDashing)
             {
-                isJumping = true;
-                jumpTimeCounter = jumpTime;
-                Jump();
-            }
+                body.linearVelocity = new Vector2(horizontalInput * speed, body.linearVelocity.y);
 
-            if (Input.GetKey(KeyCode.Space) && isJumping == true)
-            {
-                if (jumpTimeCounter > 0)
+                if (Input.GetKeyDown(KeyCode.Space) && isGrounded())
                 {
+                    isJumping = true;
+                    jumpTimeCounter = jumpTime;
                     Jump();
-                    jumpTimeCounter -= Time.deltaTime;
                 }
 
-                else
+                if (Input.GetKey(KeyCode.Space) && isJumping == true)
+                {
+                    if (jumpTimeCounter > 0)
+                    {
+                        Jump();
+                        jumpTimeCounter -= Time.deltaTime;
+                    }
+
+                    else
+                    {
+                        isJumping = false;
+                    }
+                }
+
+                if (Input.GetKeyUp(KeyCode.Space))
                 {
                     isJumping = false;
                 }
+
+                if (Input.GetKeyDown(KeyCode.Space) && !isGrounded() && doubleJump && canDoubleJump)
+                {
+                    Jump();
+                    canDoubleJump = false;
+                }
+
+                if (isGrounded())
+                {
+                    canDoubleJump = true;
+                    canAirDash = true;
+                    body.gravityScale = 1.5f;
+                }
+
+                if (!isGrounded() && body.linearVelocity.y <= 0 && isAirDashing == false)
+                {
+                    body.gravityScale = 2;
+                }
             }
 
-            if (Input.GetKeyUp(KeyCode.Space))
+            if (!isGrounded() && canAirDash && Input.GetKeyDown(KeyCode.O))
             {
-                isJumping = false;
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space) && !isGrounded() && doubleJump && canDoubleJump)
-            {
-                Jump();
-                canDoubleJump = false;
-            }
-
-            if (isGrounded())
-            {
-                canDoubleJump = true;
-                canAirDash = true;
-                body.gravityScale = 1.5f;
-            }
-
-            if (!isGrounded() && body.linearVelocity.y <= 0 && isAirDashing == false)
-            {
-                body.gravityScale = 2;
+                StartCoroutine(Dash());
             }
         }
 
-        if (!isGrounded() && canAirDash && Input.GetKeyDown(KeyCode.O))
-        {
-            StartCoroutine(Dash());
-        }
 
         //Flip Sprite
         if (horizontalInput > 0.01f)
