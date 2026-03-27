@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public float jumpForce;
+    public float jumpForceTwo;
     public float speed;
     private Rigidbody2D body;
     public BoxCollider2D boxCollider;
@@ -112,7 +113,7 @@ public class Player : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space) && !isGrounded() && doubleJump && canDoubleJump)
                 {
-                    Jump();
+                    DoubleJump();
                     canDoubleJump = false;
                 }
 
@@ -175,9 +176,9 @@ public class Player : MonoBehaviour
         body.linearVelocity = new Vector2(body.linearVelocity.x, jumpForce);
     }
 
-    private void AirDash()
+    private void DoubleJump()
     {
-        
+        body.linearVelocity = new Vector2(body.linearVelocity.x, jumpForceTwo);
     }
 
     public void StopMoving()
