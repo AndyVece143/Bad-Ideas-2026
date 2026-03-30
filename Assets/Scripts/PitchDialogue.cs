@@ -7,8 +7,9 @@ public class PitchDialogue : MonoBehaviour
     public TextMeshPro textComponent;
     public string[] lines;
     public float textSpeed;
-    private int index;
+    public int index;
     private float timer;
+    public PitchMe pitchMe;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,18 +23,25 @@ public class PitchDialogue : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    if (textComponent.text == lines[index])
-        //    {
-        //        NextLine();
-        //    }
-        //    else
-        //    {
-        //        StopAllCoroutines();
-        //        textComponent.text = lines[index];
-        //    }
-        //}
+        switch (index)
+        {
+            case 0:
+                pitchMe.animInt = 8;
+                break;
+            case 1:
+                pitchMe.animInt = 0;
+                break;
+            case 2:
+                pitchMe.animInt = 7;
+                break;
+            case 3:
+                pitchMe.animInt = 1;
+                break;
+            case 4:
+                pitchMe.animInt = 9;
+                break;
+        }
+
         if (textComponent.text == lines[index])
         {
             timer -= Time.deltaTime;

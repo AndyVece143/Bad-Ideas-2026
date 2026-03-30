@@ -156,6 +156,8 @@ MonoBehaviour:
   - Testing, testing.
   - SaltyDKDan!
   textSpeed: 0.1
+  index: 0
+  pitchMe: {fileID: 0}
 --- !u!114 &524380449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -990,9 +992,36 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PitchDialogue
   textComponent: {fileID: 928890672}
   lines:
-  - Hello everybody my name is Markiplier
-  - And welcome to five nights at freddys
-  textSpeed: 0.1
+  - Bad Game Idea!
+  - So it's a prison escape game where you must avoid the guards and get out of there!
+  - The catch?
+  - There are a bunch of puzzles in the game that will require some unorthodox thinking
+    to solve!
+  - Welcome to WHERE IS THE TITLE
+  - Alright, so here is the rundown.
+  - You play as a guy who was wrongfully arrested for wearing orange near a prison,
+    and you must break out.
+  - As you sneak past the guards, you will encounter roadblocks in the form of puzzles.
+  - These puzzles will require some "outside the box" thinking to solve.
+  - Huh? You want an example of a solution?
+  - Well, I can't exactly tell you, there's no fun in that.
+  - Let's just say... you may have to look outside the game for the solution.
+  - To recap, what will the game entail?
+  - Awesome 2D platforming action!
+  - High octane puzzle solving!
+  - Beautifully hand drawn graphics!
+  - A ranking system based on your performance!
+  - How amazing!
+  - This game was made by two people!
+  - The game design and programming was done by me, AndyVece143!
+  - The art and music was done by LackOfBeef!
+  - And I can assure you...
+  - No AI was used in the creation of this game. We hate AI!
+  - We can't wait to see you escape the prison in WHERE IS THE TITLE
+  - See ya!
+  textSpeed: 0.05
+  index: 0
+  pitchMe: {fileID: 652756504}
 --- !u!4 &1453314676
 Transform:
   m_ObjectHideFlags: 0
